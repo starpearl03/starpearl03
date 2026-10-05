@@ -89,7 +89,7 @@ def banner():
 
 def typing():
     """Cycling lines with a typewriter reveal (clip width animation) and a blinking caret."""
-    W, H = 640, 44
+    W, H = 640, 28
     lines = [
         "I build and ship full-stack web apps end to end",
         "and keep the infrastructure behind them running.",
@@ -116,8 +116,8 @@ def typing():
             f".k{i}{{animation:k{i} {total}s steps({len(text.replace('&amp;', '&'))}) infinite}}")
         body.append(
             f'<clipPath id="c{i}"><rect x="{x0:.0f}" y="0" height="{H}" width="0"/></clipPath>'
-            f'<g class="l{i}"><text x="{x0:.0f}" y="28" clip-path="url(#c{i})" textLength="{len(text.replace('&amp;', '&')) * 10}" lengthAdjust="spacingAndGlyphs">{text}</text>'
-            f'<g class="k{i}"><rect x="{x0 + 1:.0f}" y="12" width="2.5" height="21" class="caret"/></g></g>')
+            f'<g class="l{i}"><text x="{x0:.0f}" y="20" clip-path="url(#c{i})" textLength="{len(text.replace('&amp;', '&')) * 10}" lengthAdjust="spacingAndGlyphs">{text}</text>'
+            f'<g class="k{i}"><rect x="{x0 + 1:.0f}" y="4" width="2.5" height="21" class="caret"/></g></g>')
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="{' '.join(lines)}">
 <style>
   {FONTFACE}

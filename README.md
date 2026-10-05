@@ -1,18 +1,16 @@
-<div align="center">
+<p align="center">
+  <img src="assets/banner.svg" alt="Felistas Charuka · Software Engineer · Full-Stack Web · IT Systems" width="100%"/>
+</p>
 
-<img src="assets/banner.svg" alt="Felistas Charuka · Software Engineer · Full-Stack Web · IT Systems" width="100%"/>
+<p align="center">
+  <a href="https://www.linkedin.com/in/felistas-charuka/"><img src="assets/social-linkedin.svg" alt="LinkedIn: in/felistas-charuka" height="52"/></a>
+  <a href="mailto:felistas03charuka@gmail.com"><img src="assets/social-email.svg" alt="Email: felistas03charuka@gmail.com" height="52"/></a>
+  <img src="assets/social-status.svg" alt="Status: open to Software Engineer and IT roles" height="52"/>
+</p>
 
-<a href="https://www.linkedin.com/in/felistas-charuka/"><img src="assets/social-linkedin.svg" alt="LinkedIn: in/felistas-charuka" height="52"/></a>
-<a href="mailto:felistas03charuka@gmail.com"><img src="assets/social-email.svg" alt="Email: felistas03charuka@gmail.com" height="52"/></a>
-<img src="assets/social-status.svg" alt="Status: open to Software Engineer and IT roles" height="52"/>
-
-<br/><br/>
-
-<img src="assets/typing.svg" alt="I build and ship full-stack web apps end to end, and keep the infrastructure behind them running. Next.js, TypeScript, FastAPI, Laravel, MongoDB, MySQL, Vercel, Render." width="640"/>
-
-</div>
-
-### 🧰 Tech stack
+<p align="center">
+  <img src="assets/typing.svg" alt="I build and ship full-stack web apps end to end, and keep the infrastructure behind them running. Next.js, TypeScript, FastAPI, Laravel, MongoDB, MySQL, Vercel, Render." width="640"/>
+</p>
 
 <p align="center">
   <img src="https://skillicons.dev/icons?i=ts,js,py,java,php,c,html,css&perline=8" alt="Languages"/>
@@ -32,8 +30,6 @@
   <img src="https://img.shields.io/badge/Sage_%26_QuickBooks-0b1020?style=flat-square&logo=quickbooks&logoColor=white" alt="Sage and QuickBooks"/>
 </p>
 
-<div align="center">
-
-<img src="assets/footer.svg" alt="" width="100%"/>
-
-</div>
+<p align="center">
+  <img src="assets/footer.svg" alt="" width="100%"/>
+</p>
