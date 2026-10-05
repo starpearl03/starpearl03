@@ -2,7 +2,7 @@
 
 <img src="assets/banner.svg" alt="Felistas Charuka · Software Engineer · Full-Stack Web · IT Systems" width="100%"/>
 
-<img src="assets/typing.svg" alt="I build web apps from first commit to production, and I keep the systems behind them running." width="620"/>
+<img src="assets/typing.svg" alt="Full-stack engineer: Next.js, TypeScript, FastAPI, Laravel, MongoDB, MySQL, Vercel, Render." width="620"/>
 
 <p>
   <a href="mailto:felistas03charuka@gmail.com"><img src="https://img.shields.io/badge/Email-felistas03charuka%40gmail.com-1f3864?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/></a>
@@ -12,14 +12,9 @@
 
 </div>
 
-### 👋 About me
-
-Computer Science graduate (**B.Sc. Hons, Upper Second Class**) from the **University of Zimbabwe** who works on both sides of IT: I **build and deploy web applications**, and I **support the people and systems that depend on them**. I like taking a project from first commit to a live deployment and leaving systems better documented than I found them.
-
-- 🛠️ **Full-stack:** Next.js, React, TypeScript, Laravel, FastAPI, MongoDB, MySQL
-- 🚀 **Ships to production:** Vercel preview builds per PR, auto-deploys on Render, environment-based config
-- 🖧 **IT systems:** Microsoft 365 migrations, firewalls, networking, CCTV, Starlink, 1st and 2nd line support
-- 🎓 **Research:** AI-based face recognition and crime-pattern analysis (final-year project)
+<p align="center">
+  <img src="assets/terminal.svg" alt="whoami: Felistas Charuka, Software Engineer. I build and ship full-stack web apps with Next.js, TypeScript and FastAPI, and keep the infrastructure behind them running. Open to Software Engineer and IT roles." width="100%"/>
+</p>
 
 ### 🧰 Tech stack
 

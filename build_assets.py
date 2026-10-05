@@ -1,4 +1,5 @@
 """Generates the animated SVGs used by the profile README (pure SVG + CSS, no JS, so GitHub renders them)."""
+import base64
 import math
 import random
 from pathlib import Path
@@ -12,6 +13,12 @@ INK, MUTED, ACCENT, GLOW = "#f2f4f8", "#a9b4c8", "#7aa2f7", "#f6c177"
 SANS = "'Segoe UI', -apple-system, 'Helvetica Neue', Arial, sans-serif"
 SERIF = "Georgia, 'Times New Roman', serif"
 MONO = "'SFMono-Regular', Consolas, 'Liberation Mono', monospace"
+_font = lambda w: base64.b64encode((OUT / "fonts" / f"jbm-{w}.woff2").read_bytes()).decode()
+# Embedded JetBrains Mono (subset): an <img> SVG cannot fetch web fonts, so the font travels inside the file.
+FONTFACE = "".join(
+    f"@font-face{{font-family:'JBM';font-weight:{w};src:url(data:font/woff2;base64,{_font(w)}) format('woff2')}}"
+    for w in (400, 700))
+CODE = "'JBM', " + MONO
 REDUCED = "@media (prefers-reduced-motion: reduce){*{animation:none!important}}"
 
 
@@ -84,10 +91,10 @@ def typing():
     """Cycling lines with a typewriter reveal (clip width animation) and a blinking caret."""
     W, H = 760, 44
     lines = [
-        "I build web apps from first commit to production.",
-        "Next.js · TypeScript · Laravel · FastAPI · MongoDB",
-        "and I keep the systems behind them running.",
-        "Open to Software Engineer &amp; IT Support roles.",
+        "Full-stack engineer · Next.js · TypeScript",
+        "APIs in FastAPI &amp; Laravel, data in MongoDB &amp; MySQL",
+        "Shipping to production on Vercel &amp; Render",
+        "Cloud, networks &amp; systems that stay up",
     ]
     per = 4.0
     total = per * len(lines)
@@ -110,7 +117,8 @@ def typing():
             f'<g class="k{i}"><rect x="21" y="12" width="2.5" height="21" class="caret"/></g></g>')
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="{' '.join(lines)}">
 <style>
-  text{{font-family:{MONO};font-size:17px;fill:{ACCENT}}}
+  {FONTFACE}
+  text{{font-family:{CODE};font-size:17px;fill:{ACCENT}}}
   .caret{{fill:{GLOW};animation:blink 1s step-end infinite}}
   @keyframes blink{{50%{{opacity:0}}}}
   {''.join(css)}
@@ -118,6 +126,70 @@ def typing():
 </style>
 {''.join(body)}
 </svg>'''
+
+
+def terminal():
+    """A terminal card: each command types out, then its output fades in. Plays once and holds."""
+    W, PAD, LH, CW = 880, 28, 30, 9.6
+    esc = lambda t: t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    # (command, [output lines]); output lines are lists of (text, css class)
+    script = [
+        ("whoami", [[("Felistas Charuka", "hi"), (" — Software Engineer", "out")]]),
+        ("cat about.md", [
+            [("I build and ship ", "out"), ("full-stack web apps", "hi"), (" with Next.js, TypeScript", "out")],
+            [("and FastAPI, and keep the ", "out"), ("infrastructure", "hi"), (" behind them running.", "out")],
+        ]),
+        ("echo $STATUS", [[("● ", "ok"), ("Open to Software Engineer & IT roles", "out")]]),
+    ]
+    css, body = [], []
+    y, t = 40 + PAD + 8, 0.6
+    for i, (cmd, outs) in enumerate(script):
+        type_dur = 0.07 * len(cmd)
+        w = len(cmd) * CW
+        body.append(
+            f'<text x="{PAD}" y="{y}" class="pr">❯</text>'
+            f'<clipPath id="tc{i}"><rect class="ty{i}" x="{PAD + 22}" y="{y - 22}" height="30" width="{w + 2:.0f}"/></clipPath>'
+            f'<text x="{PAD + 22}" y="{y}" class="cmd" clip-path="url(#tc{i})" textLength="{w:.0f}" lengthAdjust="spacingAndGlyphs">{esc(cmd)}</text>')
+        css.append(f".ty{i}{{animation:type{i} {type_dur:.2f}s steps({len(cmd)}) {t:.2f}s both}}"
+                   f"@keyframes type{i}{{from{{width:0}}}}")
+        # the prompt itself appears just before typing starts
+        body[-1] = body[-1].replace('class="pr"', f'class="pr fade" style="animation-delay:{max(t - 0.25, 0):.2f}s"', 1)
+        t += type_dur + 0.35
+        y += LH
+        for line in outs:
+            spans = "".join(f'<tspan class="{c}">{esc(txt)}</tspan>' for txt, c in line)
+            body.append(f'<text x="{PAD + 22}" y="{y}" class="fade" style="animation-delay:{t:.2f}s">{spans}</text>')
+            t += 0.18
+            y += LH
+        t += 0.5
+        y += 10
+    body.append(f'<g class="fade" style="animation-delay:{t:.2f}s"><text x="{PAD}" y="{y}" class="pr">❯</text>'
+                f'<rect x="{PAD + 22}" y="{y - 17}" width="10" height="21" class="caret"/></g>')
+    H = y + PAD - 4
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Felistas Charuka, Software Engineer. I build and ship full-stack web apps with Next.js, TypeScript and FastAPI, and keep the infrastructure behind them running. Open to Software Engineer and IT roles.">
+<style>
+  {FONTFACE}
+  text{{font-family:{CODE};font-size:16px;white-space:pre}}
+  .pr{{fill:{GLOW};font-weight:700}}
+  .cmd{{fill:{INK};font-weight:700}}
+  .out{{fill:{MUTED}}}
+  .hi{{fill:{ACCENT};font-weight:700}}
+  .ok{{fill:#9ece6a}}
+  .bar{{fill:{MUTED};font-size:13px}}
+  .fade{{animation:fade .45s ease both}}
+  @keyframes fade{{from{{opacity:0;transform:translateY(4px)}}}}
+  .caret{{fill:{GLOW};animation:blink 1.05s step-end infinite}}
+  @keyframes blink{{50%{{opacity:0}}}}
+  {"".join(css)}
+  {REDUCED}
+</style>
+<rect width="{W}" height="{H}" rx="14" fill="{BG0}"/>
+<rect width="{W}" height="{H}" rx="14" fill="none" stroke="{BG1}" stroke-width="2"/>
+<path d="M0 14a14 14 0 0 1 14-14h{W - 28}a14 14 0 0 1 14 14v26H0z" fill="#121a30"/>
+<circle cx="24" cy="20" r="6" fill="#ff5f57"/><circle cx="44" cy="20" r="6" fill="#febc2e"/><circle cx="64" cy="20" r="6" fill="#28c840"/>
+<text x="{W / 2}" y="25" text-anchor="middle" class="bar">felistas@dev: ~</text>
+{"".join(body)}
+</svg>"""
 
 
 def footer():
@@ -137,5 +209,6 @@ def footer():
 
 (OUT / "banner.svg").write_text(banner(), encoding="utf-8")
 (OUT / "typing.svg").write_text(typing(), encoding="utf-8")
+(OUT / "terminal.svg").write_text(terminal(), encoding="utf-8")
 (OUT / "footer.svg").write_text(footer(), encoding="utf-8")
 print("built", [p.name for p in OUT.iterdir()])
