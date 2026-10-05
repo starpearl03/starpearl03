@@ -89,8 +89,10 @@ def banner():
 
 def typing():
     """Cycling lines with a typewriter reveal (clip width animation) and a blinking caret."""
-    W, H = 760, 44
+    W, H = 640, 44
     lines = [
+        "I build and ship full-stack web apps end to end",
+        "and keep the infrastructure behind them running.",
         "Full-stack engineer · Next.js · TypeScript",
         "APIs in FastAPI &amp; Laravel, data in MongoDB &amp; MySQL",
         "Shipping to production on Vercel &amp; Render",
@@ -101,6 +103,7 @@ def typing():
     css, body = [], []
     for i, text in enumerate(lines):
         width = len(text.replace('&amp;', '&')) * 10 + 4
+        x0 = (W - width) / 2
         s, e = i * per / total * 100, (i + 1) * per / total * 100
         a, b, c = s + 1.6 / total * 100, e - 0.9 / total * 100, e - 0.3 / total * 100
         css.append(
@@ -112,9 +115,9 @@ def typing():
             f".l{i}{{animation:v{i} {total}s step-end infinite}}"
             f".k{i}{{animation:k{i} {total}s steps({len(text.replace('&amp;', '&'))}) infinite}}")
         body.append(
-            f'<clipPath id="c{i}"><rect x="20" y="0" height="{H}" width="0"/></clipPath>'
-            f'<g class="l{i}"><text x="20" y="28" clip-path="url(#c{i})" textLength="{len(text.replace('&amp;', '&')) * 10}" lengthAdjust="spacingAndGlyphs">{text}</text>'
-            f'<g class="k{i}"><rect x="21" y="12" width="2.5" height="21" class="caret"/></g></g>')
+            f'<clipPath id="c{i}"><rect x="{x0:.0f}" y="0" height="{H}" width="0"/></clipPath>'
+            f'<g class="l{i}"><text x="{x0:.0f}" y="28" clip-path="url(#c{i})" textLength="{len(text.replace('&amp;', '&')) * 10}" lengthAdjust="spacingAndGlyphs">{text}</text>'
+            f'<g class="k{i}"><rect x="{x0 + 1:.0f}" y="12" width="2.5" height="21" class="caret"/></g></g>')
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="{' '.join(lines)}">
 <style>
   {FONTFACE}
@@ -122,73 +125,53 @@ def typing():
   .caret{{fill:{GLOW};animation:blink 1s step-end infinite}}
   @keyframes blink{{50%{{opacity:0}}}}
   {''.join(css)}
-  @media (prefers-reduced-motion: reduce){{*{{animation:none!important}}.l0{{opacity:1}}#c0 rect{{width:{len(lines[0]) * 10 + 4:.0f}px}}}}
+  @media (prefers-reduced-motion: reduce){{*{{animation:none!important}}g[class^=l]{{opacity:0}}.caret{{display:none}}g.l0{{opacity:1}}#c0 rect{{width:{len(lines[0]) * 10 + 4:.0f}px}}}}
 </style>
 {''.join(body)}
 </svg>'''
 
 
-def terminal():
-    """A terminal card: each command types out, then its output fades in. Plays once and holds."""
-    W, PAD, LH, CW = 880, 28, 30, 9.6
-    esc = lambda t: t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    # (command, [output lines]); output lines are lists of (text, css class)
-    script = [
-        ("whoami", [[("Felistas Charuka", "hi"), (" — Software Engineer", "out")]]),
-        ("cat about.md", [
-            [("I build and ship ", "out"), ("full-stack web apps", "hi"), (" with Next.js, TypeScript", "out")],
-            [("and FastAPI, and keep the ", "out"), ("infrastructure", "hi"), (" behind them running.", "out")],
-        ]),
-        ("echo $STATUS", [[("● ", "ok"), ("Open to Software Engineer & IT roles", "out")]]),
-    ]
-    css, body = [], []
-    y, t = 40 + PAD + 8, 0.6
-    for i, (cmd, outs) in enumerate(script):
-        type_dur = 0.07 * len(cmd)
-        w = len(cmd) * CW
-        body.append(
-            f'<text x="{PAD}" y="{y}" class="pr">❯</text>'
-            f'<clipPath id="tc{i}"><rect class="ty{i}" x="{PAD + 22}" y="{y - 22}" height="30" width="{w + 2:.0f}"/></clipPath>'
-            f'<text x="{PAD + 22}" y="{y}" class="cmd" clip-path="url(#tc{i})" textLength="{w:.0f}" lengthAdjust="spacingAndGlyphs">{esc(cmd)}</text>')
-        css.append(f".ty{i}{{animation:type{i} {type_dur:.2f}s steps({len(cmd)}) {t:.2f}s both}}"
-                   f"@keyframes type{i}{{from{{width:0}}}}")
-        # the prompt itself appears just before typing starts
-        body[-1] = body[-1].replace('class="pr"', f'class="pr fade" style="animation-delay:{max(t - 0.25, 0):.2f}s"', 1)
-        t += type_dur + 0.35
-        y += LH
-        for line in outs:
-            spans = "".join(f'<tspan class="{c}">{esc(txt)}</tspan>' for txt, c in line)
-            body.append(f'<text x="{PAD + 22}" y="{y}" class="fade" style="animation-delay:{t:.2f}s">{spans}</text>')
-            t += 0.18
-            y += LH
-        t += 0.5
-        y += 10
-    body.append(f'<g class="fade" style="animation-delay:{t:.2f}s"><text x="{PAD}" y="{y}" class="pr">❯</text>'
-                f'<rect x="{PAD + 22}" y="{y - 17}" width="10" height="21" class="caret"/></g>')
-    H = y + PAD - 4
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="Felistas Charuka, Software Engineer. I build and ship full-stack web apps with Next.js, TypeScript and FastAPI, and keep the infrastructure behind them running. Open to Software Engineer and IT roles.">
+LINKEDIN_ICON = ("M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414"
+                 "v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926"
+                 "-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019"
+                 "H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227"
+                 " 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z")
+
+
+def social(label, value, icon, tint, delay):
+    """A pill button: tinted icon disc, small caps label over the value, and a light sweep along the border."""
+    H, CW = 56, 8.4
+    W = int(70 + len(value.replace('&amp;', '&')) * CW + 26)
+    if icon == "linkedin":
+        glyph = f'<g transform="translate(19 16) scale(1)"><path d="{LINKEDIN_ICON}" fill="#fff"/></g>'
+    elif icon == "mail":
+        glyph = ('<g transform="translate(18 18)" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round">'
+                 '<rect x="1" y="2" width="24" height="17" rx="3"/><path d="M2 4l11 8 11-8"/></g>')
+    else:  # status: pulsing dot
+        glyph = ('<circle cx="31" cy="28" r="6" fill="#fff"/>'
+                 '<circle cx="31" cy="28" r="6" fill="none" stroke="#fff" stroke-width="2" class="ping"/>')
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-label="{label}: {value}">
+<defs>
+  <linearGradient id="edge" x1="0" x2="1"><stop offset="0" stop-color="{tint}"/><stop offset="1" stop-color="{BG1}"/></linearGradient>
+  <linearGradient id="shine" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <clipPath id="pill"><rect x="1" y="1" width="{W - 2}" height="{H - 2}" rx="{H / 2 - 1}"/></clipPath>
+</defs>
 <style>
   {FONTFACE}
-  text{{font-family:{CODE};font-size:16px;white-space:pre}}
-  .pr{{fill:{GLOW};font-weight:700}}
-  .cmd{{fill:{INK};font-weight:700}}
-  .out{{fill:{MUTED}}}
-  .hi{{fill:{ACCENT};font-weight:700}}
-  .ok{{fill:#9ece6a}}
-  .bar{{fill:{MUTED};font-size:13px}}
-  .fade{{animation:fade .45s ease both}}
-  @keyframes fade{{from{{opacity:0;transform:translateY(4px)}}}}
-  .caret{{fill:{GLOW};animation:blink 1.05s step-end infinite}}
-  @keyframes blink{{50%{{opacity:0}}}}
-  {"".join(css)}
+  .lbl{{font-family:{CODE};font-size:10.5px;letter-spacing:2px;fill:{MUTED}}}
+  .val{{font-family:{CODE};font-size:14px;font-weight:700;fill:{INK}}}
+  .sweep{{animation:sweep 5s ease-in-out {delay}s infinite both}}
+  @keyframes sweep{{0%{{transform:translateX(-140px)}}35%,100%{{transform:translateX({W + 40}px)}}}}
+  .ping{{transform-origin:31px 28px;animation:ping 1.8s ease-out infinite}}
+  @keyframes ping{{from{{transform:scale(1);opacity:.9}}to{{transform:scale(2.4);opacity:0}}}}
   {REDUCED}
 </style>
-<rect width="{W}" height="{H}" rx="14" fill="{BG0}"/>
-<rect width="{W}" height="{H}" rx="14" fill="none" stroke="{BG1}" stroke-width="2"/>
-<path d="M0 14a14 14 0 0 1 14-14h{W - 28}a14 14 0 0 1 14 14v26H0z" fill="#121a30"/>
-<circle cx="24" cy="20" r="6" fill="#ff5f57"/><circle cx="44" cy="20" r="6" fill="#febc2e"/><circle cx="64" cy="20" r="6" fill="#28c840"/>
-<text x="{W / 2}" y="25" text-anchor="middle" class="bar">felistas@dev: ~</text>
-{"".join(body)}
+<rect x="1" y="1" width="{W - 2}" height="{H - 2}" rx="{H / 2 - 1}" fill="{BG0}" stroke="url(#edge)" stroke-width="2"/>
+<g clip-path="url(#pill)"><rect class="sweep" x="0" y="0" width="90" height="{H}" fill="url(#shine)" opacity=".08"/></g>
+<circle cx="31" cy="28" r="20" fill="{tint}"/>
+{glyph}
+<text x="62" y="23" class="lbl">{label.upper()}</text>
+<text x="62" y="41" class="val">{value}</text>
 </svg>"""
 
 
@@ -209,6 +192,8 @@ def footer():
 
 (OUT / "banner.svg").write_text(banner(), encoding="utf-8")
 (OUT / "typing.svg").write_text(typing(), encoding="utf-8")
-(OUT / "terminal.svg").write_text(terminal(), encoding="utf-8")
+(OUT / "social-linkedin.svg").write_text(social("LinkedIn", "in/felistas-charuka", "linkedin", "#0a66c2", 0), encoding="utf-8")
+(OUT / "social-email.svg").write_text(social("Email", "felistas03charuka@gmail.com", "mail", "#c2410c", 1.2), encoding="utf-8")
+(OUT / "social-status.svg").write_text(social("Status", "Open to SWE &amp; IT roles", "status", "#2f9e44", 2.4), encoding="utf-8")
 (OUT / "footer.svg").write_text(footer(), encoding="utf-8")
 print("built", [p.name for p in OUT.iterdir()])
