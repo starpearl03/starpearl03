@@ -176,7 +176,7 @@ def social(label, value, icon, tint, delay):
 
 
 def footer():
-    W, H = 1200, 90
+    W, H = 1200, 60
     def wave(amp, phase, y0):
         pts = []
         for x in range(0, W * 2 + 1, 20):
@@ -185,8 +185,8 @@ def footer():
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" preserveAspectRatio="none">
 <defs><linearGradient id="f" x1="0" x2="1"><stop offset="0" stop-color="{BG0}"/><stop offset="1" stop-color="{BG1}"/></linearGradient></defs>
 <style>.w{{animation:slide linear infinite}}@keyframes slide{{to{{transform:translateX(-{W}px)}}}}{REDUCED}</style>
-<path class="w" style="animation-duration:14s;opacity:.35" fill="{ACCENT}" d="{wave(9, 0, 38)}"/>
-<path class="w" style="animation-duration:9s" fill="url(#f)" d="{wave(7, 1.6, 50)}"/>
+<path class="w" style="animation-duration:14s;opacity:.35" fill="{ACCENT}" d="{wave(9, 0, 14)}"/>
+<path class="w" style="animation-duration:9s" fill="url(#f)" d="{wave(7, 1.6, 24)}"/>
 </svg>'''
 
 
